@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>focal Mobile — 行動學業輸入中心</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #0d0f14;
+      color: #f3f4f6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .mobile-card {
+      background: #141720;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 20px;
+    }
+    .mobile-tab-active {
+      background: #deb86a !important;
+      color: #0d0f14 !important;
+      font-weight: 800 !important;
+      box-shadow: 0 4px 14px rgba(222, 184, 106, 0.25);
+    }
+    .mobile-tab-inactive {
+      background: rgba(255, 255, 255, 0.05);
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body class="bg-[#0d0f14] text-slate-100 min-h-screen pb-12 flex flex-col antialiased">
+
+  <!-- Mobile Top Bar -->
+  <header class="sticky top-0 z-40 bg-[#0d0f14]/90 backdrop-blur-md border-b border-white/10 px-4 py-3.5 flex items-center justify-between">
+    <div class="flex items-center space-x-2">
+      <div class="w-7 h-7 rounded-lg bg-amber-400/20 border border-amber-400/40 flex items-center justify-center text-amber-300 font-black text-xs">
+        ✦
+      </div>
+      <div>
+        <div class="flex items-center space-x-1.5">
+          <span class="font-extrabold text-sm tracking-tight text-white">focal</span>
+          <span class="text-[9px] font-mono font-bold bg-white/10 text-amber-300 px-1.5 py-0.2 rounded">MOBILE</span>
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center space-x-2">
+      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+      <span class="text-[11px] text-emerald-400 font-semibold font-mono">已連線同步</span>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 p-4 max-w-lg mx-auto w-full space-y-4">
+    
+    <!-- Toast Notification -->
+    <div id="mobile-toast" class="hidden p-3.5 rounded-xl text-xs font-bold transition-all shadow-xl"></div>
+
+    <!-- Segmented Control (Tabs) -->
+    <div class="grid grid-cols-3 gap-1.5 p-1 bg-[#14161f] border border-white/5 rounded-2xl text-xs font-semibold">
+      <button onclick="switchMobileTab('assignment')" id="mtab-btn-assignment" class="py-2.5 rounded-xl transition text-center mobile-tab-active">
+        + 新增功課
+      </button>
+      <button onclick="switchMobileTab('meeting')" id="mtab-btn-meeting" class="py-2.5 rounded-xl transition text-center mobile-tab-inactive">
+        🤝 記錄開會
+      </button>
+      <button onclick="switchMobileTab('quickdue')" id="mtab-btn-quickdue" class="py-2.5 rounded-xl transition text-center mobile-tab-inactive">
+        ⚡ 快速改期
+      </button>
+    </div>
+
+    <!-- ==================== TAB 1: 新增作業 ==================== -->
+    <div id="mtab-content-assignment" class="space-y-4">
+      <div class="mobile-card p-5 space-y-4">
+        <div>
+          <h2 class="text-base font-extrabold text-white flex items-center">
+            <span class="text-amber-300 mr-1.5">✦</span> 手機快速新增功課 / 作業
+          </h2>
+          <p class="text-xs text-slate-400 mt-0.5">送出後，電腦版網站將立即同步並重新計算逆向動工日！</p>
+        </div>
+
+        <form onsubmit="handleMobileCreateAssignment(event)" class="space-y-3.5 text-xs">
+          <div>
+            <label class="block text-slate-300 font-bold mb-1">所屬課程 (Course)</label>
+            <select id="m-course-id" required class="w-full px-3 py-2.5 bg-[#181a24] border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-400">
+              <option value="MOD101">MOD101: Dissertation Project</option>
+              <option value="MOD102">MOD102: Strategy & Marketing</option>
+              <option value="MOD103">MOD103: Leadership & Management</option>
+              <option value="MOD104">MOD104: Global Business</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-slate-300 font-bold mb-1">作業名稱 (Title)</label>
+            <input type="text" id="m-assign-title" required placeholder="如 Chapter 2 Literature Review Draft" class="w-full px-3 py-2.5 bg-[#181a24] border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-400">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-slate-300 font-bold mb-1">截止日期與時間</label>
+              <input type="datetime-local" id="m-assign-due" required class="w-full px-3 py-2.5 bg-[#181a24] border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-400">
+            </div>
+            <div>
+              <label class="block text-slate-300 font-bold mb-1">佔分比重 (%)</label>
+              <input type="number" id="m-assign-weight" required min="1" max="100" value="25" class="w-full px-3 py-2.5 bg-[#181a24] border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-400">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-slate-300 font-bold mb-1">作業類型 (Type)</label>
+            <select id="m-assign-type" class="w-full px-3 py-2.5 bg-[#181a24] border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-400">
+              <option value="essay">論文 / 報告 (Essay)</option>
+              <option value="presentation">演講簡報 (Presentation)</option>
+              <option value="group_project">小組專案 (Group Project)</option>
+              <option value="exam">期末考 / 測驗 (Exam)</option>
+              <option value="other">其他學業任務 (Other)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-slate-300 font-bold mb-1">補充說明 (選填)</label>
+            <textarea id="m-assign-desc" rows="2" placeholder="如 需套用 Gibbs 反思循環、字數限制 3,000 字..." class="w-full px-3 py-2.5 bg-[#181a24] border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-400"></textarea>
+          </div>
+
+          <button type="submit" id="btn-submit-assignment" class="w-full py-3 bg-gradient-to-r from-amber-300 to-amber-400 hover:from-amber-400 hover:to-amber-500 text-black font-extrabold text-sm rounded-xl shadow-lg transition flex items-center justify-center space-x-1.5 mt-2">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>儲存並同步至電腦網站</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 2: 記錄開會與上傳筆記 ==================== -->
+    <div id="mtab-content-meeting" class="hidden space-y-4">
+      <div class="mobile-card p-5 space-y-4">
+        <div>
+          <h2 class="text-base font-extrabold text-white flex items-center">
+            <span class="text-amber-300 mr-1.5">✦</span> 記錄開會 & 上傳手機照片/筆記
+          </h2>
+          <p class="text-xs text-slate-400 mt-0.5">直接用手機拍照上傳白板筆記，或挑選 PDF，AI 會自動融入備料！</p>
+        </div>
+
+        <form onsubmit="handleMobileCreateMeeting(event)" class="space-y-3.5 text-xs">
+          <div>
+            <label class="block text-slate-300 font-bold mb-1">課程代碼</label>
+            <select id="m-mtg-course" required class="w-full px-3 py-2.5 bg-[#181a24] border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-400">
+              <option value="MOD101">MOD101: Dissertation Project</option>
+              <option value="MOD102">MOD102: Strategy & Marketing</option>
+              <option value="MOD103">MOD103: Leadership & Management</option>
+              <option value="MOD104">MOD104: Global Business</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-slate-300 font-bold mb-1">會議主題</label>
+            <input type="text" id="m-mtg-title" required placeholder="如 導師晤談討論大綱 / 小組討論分工" class="w-full px-3 py-2.5 bg-[#181a24] border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-400">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-slate-300 font-bold mb-1">開會時間</label>
+              <input type="datetime-local" id="m-mtg-time" required class="w-full px-3 py-2.5 bg-[#181a24] border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-400">
+            </div>
+            <div>
+              <label class="block text-slate-300 font-bold mb-1">地點 / 線上</label>
+              <input type="text" id="m-mtg-location" placeholder="如 圖書館 3F / Zoom" class="w-full px-3 py-2.5 bg-[#181a24] border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-400">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-slate-300 font-bold mb-1">核心討論內容 / 問題</label>
+            <textarea id="m-mtg-topic" rows="2" placeholder="討論重點摘要..." class="w-full px-3 py-2.5 bg-[#181a24] border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-400"></textarea>
+          </div>
+
+          <!-- Phone Camera / File Picker -->
+          <div class="p-3.5 bg-amber-400/5 border border-amber-400/20 rounded-xl space-y-2">
+            <label class="block text-slate-200 font-bold flex items-center">
+              <i data-lucide="camera" class="w-4 h-4 mr-1.5 text-amber-300"></i> 上傳手機筆記照片 / PDF 文件
+            </label>
+            <input type="file" id="m-mtg-file" multiple accept="image/*,.pdf,.docx,.txt" class="w-full text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-white/10 file:text-white bg-[#181a24] p-1.5 rounded-lg border border-white/10">
+            <p class="text-[10px] text-slate-500">可直接用手機拍照或選取多個檔案，電腦網站會同步顯示檔案晶片！</p>
+          </div>
+
+          <button type="submit" id="btn-submit-meeting" class="w-full py-3 bg-gradient-to-r from-amber-300 to-amber-400 hover:from-amber-400 hover:to-amber-500 text-black font-extrabold text-sm rounded-xl shadow-lg transition flex items-center justify-center space-x-1.5 mt-2">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>儲存會議並上傳檔案</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 3: 快速改期 ==================== -->
+    <div id="mtab-content-quickdue" class="hidden space-y-4">
+      <div class="mobile-card p-5 space-y-4">
+        <div>
+          <h2 class="text-base font-extrabold text-white flex items-center">
+            <span class="text-amber-300 mr-1.5">✦</span> 快速修改作業截止時間
+          </h2>
+          <p class="text-xs text-slate-400 mt-0.5">選擇已登錄的作業，直接手動調整為最新截止時間。</p>
+        </div>
+
+        <form onsubmit="handleMobileUpdateDueDate(event)" class="space-y-3.5 text-xs">
+          <div>
+            <label class="block text-slate-300 font-bold mb-1">選擇作業</label>
+            <select id="m-due-assignment" required class="w-full px-3 py-2.5 bg-[#181a24] border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-400">
+              <option value="">載入作業中...</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-slate-300 font-bold mb-1">最新截止日期與時間</label>
+            <input type="datetime-local" id="m-due-newdate" required class="w-full px-3 py-2.5 bg-[#181a24] border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-400">
+          </div>
+
+          <button type="submit" id="btn-submit-due" class="w-full py-3 bg-gradient-to-r from-amber-300 to-amber-400 hover:from-amber-400 hover:to-amber-500 text-black font-extrabold text-sm rounded-xl shadow-lg transition flex items-center justify-center space-x-1.5 mt-2">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>更新截止時間</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Live Deliverables Checklist -->
+    <div class="mobile-card p-4 space-y-3">
+      <div class="flex items-center justify-between text-xs font-bold text-slate-300">
+        <span>📋 即將截止之作業清單 (即時同步)</span>
+        <button onclick="loadMobileDashboard()" class="text-amber-300 hover:underline flex items-center font-mono">
+          <i data-lucide="rotate-cw" class="w-3 h-3 mr-1"></i> 重新載入
+        </button>
+      </div>
+      <div id="m-deliverables-list" class="space-y-2 text-xs">
+        <div class="text-slate-500 text-center py-4">連線資料庫載入中...</div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    let mobileAssignments = [];
+
+    async function loadMobileDashboard() {
+      try {
+        const res = await fetch('/api/dashboard');
+        const data = await res.json();
+        
+        // 1. Populate deliverables checklist
+        const listEl = document.getElementById('m-deliverables-list');
+        const selectEl = document.getElementById('m-due-assignment');
+        const courseSelects = [document.getElementById('m-course-id'), document.getElementById('m-mtg-course')];
+
+        if (data.courses && data.courses.length > 0) {
+          courseSelects.forEach(sel => {
+            if (!sel) return;
+            sel.innerHTML = data.courses.map(c => `
+              <option value="${c.id}">${c.id}: ${c.name}</option>
+            `).join('');
+          });
+        }
+        
+        const all = [];
+        (data.courses || []).forEach(c => {
+          (c.assignments || []).forEach(a => {
+            all.push({ ...a, course_code: c.id, course_name: c.name });
+          });
+        });
+        all.sort((a, b) => new Date(a.due_date) - new Date(b.due_date));
+        mobileAssignments = all;
+
+        if (all.length === 0) {
+          listEl.innerHTML = '<div class="text-slate-500 text-center py-3">目前尚無已登錄之作業</div>';
+          selectEl.innerHTML = '<option value="">尚無作業可改期</option>';
+        } else {
+          listEl.innerHTML = all.map(a => `
+            <div class="p-3 bg-[#181a24] border border-white/5 rounded-xl flex items-center justify-between">
+              <div class="min-w-0 pr-2">
+                <div class="font-bold text-white text-xs truncate">${a.title}</div>
+                <div class="text-[10px] text-slate-400 font-mono mt-0.5">${a.course_code} · 佔分 ${Math.round(a.weight * 100)}%</div>
+              </div>
+              <div class="text-right flex-shrink-0">
+                <div class="font-mono text-rose-400 font-bold text-xs">${a.due_date ? a.due_date.replace('T', ' ').substring(5, 16) : ''}</div>
+              </div>
+            </div>
+          `).join('');
+
+          selectEl.innerHTML = all.map(a => `
+            <option value="${a.id}">${a.course_code}: ${a.title} (目前: ${a.due_date.replace('T', ' ').substring(0, 16)})</option>
+          `).join('');
+        }
+      } catch (err) {
+        console.error(err);
+      }
+      lucide.createIcons();
+    }
+
+    function showMobileToast(msg, type = 'success') {
+      const el = document.getElementById('mobile-toast');
+      el.innerText = msg;
+      el.className = `p-3.5 rounded-xl text-xs font-bold transition-all shadow-xl block ${type === 'success' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'}`;
+      setTimeout(() => {
+        el.className = 'hidden';
+      }, 3500);
+    }
+
+    function switchMobileTab(tab) {
+      ['assignment', 'meeting', 'quickdue'].forEach(t => {
+        const btn = document.getElementById(`mtab-btn-${t}`);
+        const content = document.getElementById(`mtab-content-${t}`);
+        if (t === tab) {
+          btn.className = 'py-2.5 rounded-xl transition text-center mobile-tab-active';
+          content.classList.remove('hidden');
+        } else {
+          btn.className = 'py-2.5 rounded-xl transition text-center mobile-tab-inactive';
+          content.classList.add('hidden');
+        }
+      });
+      lucide.createIcons();
+    }
+
+    async function handleMobileCreateAssignment(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-submit-assignment');
+      btn.disabled = true;
+      btn.innerText = "同步中...";
+
+      const fd = new FormData();
+      fd.append('course_id', document.getElementById('m-course-id').value);
+      fd.append('title', document.getElementById('m-assign-title').value);
+      fd.append('due_date', document.getElementById('m-assign-due').value);
+      fd.append('weight', parseFloat(document.getElementById('m-assign-weight').value) / 100);
+      fd.append('assignment_type', document.getElementById('m-assign-type').value);
+      fd.append('description', document.getElementById('m-assign-desc').value);
+
+      try {
+        const res = await fetch('/api/assignments', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.status === 'success') {
+          showMobileToast(`✅ 作業《${document.getElementById('m-assign-title').value}》已成功新增並同步至網站！`);
+          document.getElementById('m-assign-title').value = '';
+          document.getElementById('m-assign-desc').value = '';
+          await loadMobileDashboard();
+        } else {
+          showMobileToast('❌ 新增失敗：' + (data.detail || data.message), 'error');
+        }
+      } catch (err) {
+        showMobileToast('連線失敗：' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i><span>儲存並同步至電腦網站</span>';
+        lucide.createIcons();
+      }
+    }
+
+    async function handleMobileCreateMeeting(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-submit-meeting');
+      btn.disabled = true;
+      btn.innerText = "上傳同步中...";
+
+      const fd = new FormData();
+      fd.append('course_id', document.getElementById('m-mtg-course').value);
+      fd.append('title', document.getElementById('m-mtg-title').value);
+      fd.append('meeting_time', document.getElementById('m-mtg-time').value);
+      fd.append('location', document.getElementById('m-mtg-location').value);
+      fd.append('topic_description', document.getElementById('m-mtg-topic').value);
+
+      const files = document.getElementById('m-mtg-file').files;
+      for (let i = 0; i < files.length; i++) {
+        fd.append('notes_file', files[i]);
+      }
+
+      try {
+        const res = await fetch('/api/meetings', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.status === 'success') {
+          showMobileToast(`✅ 開會日程《${document.getElementById('m-mtg-title').value}》與附件已同步！`);
+          document.getElementById('m-mtg-title').value = '';
+          document.getElementById('m-mtg-topic').value = '';
+          document.getElementById('m-mtg-file').value = '';
+          await loadMobileDashboard();
+        } else {
+          showMobileToast('❌ 儲存失敗：' + (data.detail || data.message), 'error');
+        }
+      } catch (err) {
+        showMobileToast('連線失敗：' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i><span>儲存會議並上傳檔案</span>';
+        lucide.createIcons();
+      }
+    }
+
+    async function handleMobileUpdateDueDate(e) {
+      e.preventDefault();
+      const assignId = document.getElementById('m-due-assignment').value;
+      const newDate = document.getElementById('m-due-newdate').value;
+      if (!assignId || !newDate) return;
+
+      const fd = new FormData();
+      fd.append('due_date', newDate);
+
+      try {
+        const res = await fetch(`/api/assignments/${assignId}/due-date`, { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.status === 'success') {
+          showMobileToast(`✅ 截止時間已成功更新為 ${data.due_date.replace('T', ' ')}！`);
+          await loadMobileDashboard();
+        } else {
+          showMobileToast('❌ 更新失敗：' + (data.detail || data.message), 'error');
+        }
+      } catch (err) {
+        showMobileToast('連線失敗：' + err.message, 'error');
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadMobileDashboard();
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

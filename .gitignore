@@ -1,0 +1,61 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+.venv/
+env/
+venv/
+ENV/
+
+# Secrets & Environment variables (CRITICAL: Do NOT upload)
+.env
+.env.local
+.token_cache.json
+*.pem
+*.key
+
+# Database, ChromaDB, and Local Storage (CRITICAL: Contains user data)
+data/
+*.db
+*.sqlite3
+syllabi/
+uploads/
+
+# IDE & OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.vscode/
+.idea/
+
+# Temporary / Scratch scripts
+build_*.py
+make_*.py
+generate_*.py
+interactive_menu.py
+update_all.py
+figma_academic_dashboard.html
+patch_*.py
