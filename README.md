@@ -1,11 +1,11 @@
-# 🎓 Academic Chief of Staff (智慧學業幕僚多代理系統)
+# 🎓 Academic Chief of Staff
 
 > **An autonomous multi-agent academic companion & executive cockpit for university students.**  
 > Powered by Google Gemini, Microsoft Graph API, and FastAPI.
 
 ---
 
-## 🌟 Overview (專案簡介)
+## 🌟 Overview
 
 **Academic Chief of Staff** is an intelligent, autonomous multi-agent operating system designed to eliminate academic anxiety and cognitive overload for university students. 
 
@@ -17,7 +17,7 @@ Instead of juggling fragmented LMS portals, syllabi PDFs, calendar conflicts, an
 
 ---
 
-## ✨ Key Features (核心亮點)
+## ✨ Key Features
 
 ### 1. 📄 Context-Aware Syllabus & Brief Ingestion
 - Batch-parses PDF and DOCX syllabi using Google Gemini to extract course frameworks, weighted deliverables, backward milestone kickoff dates, and full grading rubrics.
@@ -76,7 +76,7 @@ Instead of juggling fragmented LMS portals, syllabi PDFs, calendar conflicts, an
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/<your-username>/academic-chief-of-staff.git
+git clone https://github.com/johncat88425-del/academic-chief-of-staff.git
 cd academic-chief-of-staff
 ```
 
